@@ -5,6 +5,7 @@ import { BadgeRussianRuble, ShoppingBasket } from "lucide-react"
 import { useCartStore } from "../../../../store/useCartStore"
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { baseURL } from "../../../../api/interseptots"
 
 interface Props{
     product:IProduct
@@ -23,7 +24,7 @@ export function ProductListItem({product}:Props){
         <>
             <div className={style.productItem} key={product.id}>
                     <Link to={`product/${product.id}`}>
-                        <img src={`http://localhost:3030/uploads/${product.image_src?.[0]}`} alt={product.product_name} width="250" className={style.responsiveImage}/>
+                        <img src={`${baseURL}/uploads/${product.image_src?.[0]}`} alt={product.product_name} width="250" className={style.responsiveImage}/>
                     </Link>
                     <p className={style.productName}>{product.product_name}</p>
                     <p className={style.productPrice}>Цена: {product.price}₽</p>

@@ -9,6 +9,7 @@ import { addProduct, deleteProduct, updateProduct, uploadProductImages,productDa
 import { useCategoryStore } from '../../../../store/useCategoryStore';
 import { categoryData } from '../../../../hook/categoryHook';
 import { ICategory } from '../../../../interface/category';
+import { baseURL } from '../../../../api/interseptots';
 
 const ProductListAdmin: React.FC = () => {
   const { setProducts, products } = useProductStore();
@@ -93,7 +94,7 @@ const ProductListAdmin: React.FC = () => {
         render: (record: IProduct) => (
           <div className={style.productListImageRowAction}>
             {record.image_src?.map((src) => (
-              <img src={`http://localhost:3030/uploads/${src}`} alt="" width='50' />
+              <img src={`${baseURL}/uploads/${src}`} alt="" width='50' />
             ))}
           </div>
         ),
