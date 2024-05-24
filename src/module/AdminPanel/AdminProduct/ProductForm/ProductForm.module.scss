@@ -1,0 +1,86 @@
+.productForm{
+    gap: 15px;
+    align-items: center;
+    .productFormItem{
+        display: flex;
+        flex-direction: column;
+        position: relative;
+
+        .productFormItemSelectLabel{
+            position: absolute;
+            left: 0.5em;
+            top: -0.50em;
+            background: #ffffff;
+            border-radius: 3px;
+            padding: 0 0.5em;
+            margin-bottom: 0.5em;
+            text-transform: uppercase;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: rgb(0, 0, 0);
+            color: rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+        }
+        
+        .productFormInput{
+            height: 20px;
+            padding: 5px;
+            border-radius: 10px;
+            border: 2px solid #6bbb8a;
+            outline:none;
+            transition: 0.2s;
+        
+            &:focus{
+                border: 2px solid rgb(20, 126, 94);
+            }
+        }
+
+        span{
+            color: rgb(151, 31, 31);
+            font-weight: 600;
+        }
+
+        select {
+            /* Reset */
+            appearance: none;
+            border: 0;
+            outline: 0;
+            font: inherit;
+            /* Personalize */
+            width: 30px;
+            padding: 11px 6px;
+            background: url(https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg) no-repeat right 0.8em center / 1.4em,
+              linear-gradient(to left, rgb(86, 181, 184) 3em, rgb(255, 255, 255) 3em);
+            color: black;
+            border-radius: 0.25em;
+            box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            /* Remove IE arrow */
+            &::-ms-expand {
+              display: none;
+            }
+            /* Remove focus outline */
+            &:focus {
+              outline: none;
+            }
+            .placeholderOption{
+                font-style: italic;
+                color: #999;
+            }
+            /* <option> colors */
+            option {
+              color: black;
+              background-color: #fff;
+              border-radius: 0.25em;
+            }
+          }
+    }
+    @media screen and (max-width:884px) {
+        flex-direction: column;
+        align-items: flex-start;
+
+    }
+    
+}
+

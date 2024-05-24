@@ -1,0 +1,12 @@
+.categoryFormInput{
+    height: 20px;
+    padding: 5px;
+    border-radius: 10px;
+    border: 2px solid #6bbb8a;
+    outline:none;
+    transition: 0.2s;
+
+    &:focus{
+        border: 2px solid rgb(20, 126, 94);
+    }
+}

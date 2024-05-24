@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import cup from '../../../assets/img/cup.jpg'
 import style from "./CartItem.module.scss"
 import { Button, InputNumber,InputNumberProps,Space } from 'antd'
 import { ICart } from '../../../interface/cart'
@@ -29,9 +28,9 @@ export function CartItem({cart}:Props){
     return(
         <div className={style.cart}>
         <div className={style.cartItem}>
-        <div><img src={cup} alt="Кружка 1" width="100" /></div>
+        <div><img src={`http://localhost:3030/uploads/${cart?.product.image_src?.[0]}`} alt="Кружка 1" width="100" /></div>
         <div className={style.cartInfo}>
-            <p className={style.cartInfoProductName}>{cart.product.productName}</p>
+            <p className={style.cartInfoProductName}>{cart.product.product_name}</p>
             <p className={style.cartInfoPrice}>{cart.product.price}₽</p>
             <p className={style.cartInfoSize}>{cart.product.size}</p>
             <Space.Compact >

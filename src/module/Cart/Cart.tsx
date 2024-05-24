@@ -4,7 +4,8 @@ import { CartItem } from "./CartItem/CartItem";
 import style from './Cart.module.scss'
 import { CartTotal } from "./CartTotal/CartTotal";
 import { CartTotalModal } from "./CartTotalModal/CartTotalModal";
-import { BadgeRussianRuble } from "lucide-react";
+import { ArrowLeft, BadgeRussianRuble } from "lucide-react";
+import { Link } from "react-router-dom";
 
 
 export function Cart(){
@@ -33,6 +34,8 @@ export function Cart(){
     return(
         <div className={style.cart}>
             <div className="containerCart">
+            <Link to={'/'} className={style.btnBack}><ArrowLeft size={48} /> назад</Link>
+
                 <div className={style.container}>
                     <div className={style.cartItem}>
                     {carts && carts.map((cart)=>(

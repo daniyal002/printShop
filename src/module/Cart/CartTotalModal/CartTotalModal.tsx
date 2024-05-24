@@ -15,7 +15,7 @@ export function CartTotalModal({isModalOpen,handleOk,handleCancel}:Props){
     const total = useCartStore(state => state.total)
   
     const readableCarts = carts.map(cart => ({
-            Товар: cart.product.productName,
+            Товар: cart.product.product_name,
             Цена: cart.product.price,
             Размер: cart.product.size,
             Количество: cart.count

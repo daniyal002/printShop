@@ -1,50 +1,77 @@
 import { useProductStore } from "../../../store/useProductStore"
 import style from './ProductList.module.scss'
-import cup from '../../../assets/img/cup.jpg'
-import { BadgeRussianRuble, ShoppingBasket } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { IProduct } from "../../../interface/product"
-import { Input } from "antd"
+import { Input, Select} from "antd"
 import { SearchProps } from "antd/es/input"
-import { useCartStore } from "../../../store/useCartStore"
-
-export function ProductList(){
-
-  const { Search } = Input;
+import { ProductListItem } from "./ProductListItem/ProductListItem"
+import { productData } from "../../../hook/productHook"
+import { useCategoryStore } from "../../../store/useCategoryStore"
 
 
-    const products = useProductStore(state => state.products)
-    const [searchProduct, setSearchProduct] = useState<IProduct[]>(products)
-   
 
+
+export const ProductList: React.FC = () => {
+    const products = useProductStore(state => state.products);
+    const categories = useCategoryStore(state => state.categories)
+    const setProducts = useProductStore(state => state.setProducts);
+  
+    const { isSuccess, productsData } = productData();
+  
+    // Инициируем searchProduct как пустой массив
+    const [searchProduct, setSearchProduct] = useState<IProduct[]>([]);
+  
+    useEffect(() => {
+      if (isSuccess) {
+        setProducts(productsData as IProduct[]);
+        setSearchProduct(productsData as IProduct[]); // Убедимся, что мы инициализируем searchProduct продуктами напрямую
+      }
+    }, [isSuccess, productsData, setProducts]);
+  
+    const { Search } = Input;
     const onSearch: SearchProps['onSearch'] = (value, _e) => {
-        if (value !== "") {
-            const regex = new RegExp(value.split('').join('.*'), 'i');
-            console.log(searchProduct)
-            setSearchProduct(products.filter((product) => regex.test(product.productName)))
-        } else {
-            setSearchProduct(products)
-        }
+      if (value !== "") {
+        const regex = new RegExp(value.split('').join('.*'), 'i');
+        setSearchProduct(products.filter((product) => regex.test(product.product_name)));
+      } else {
+        setSearchProduct(products);
+      }
+    };
+    
+    const onChange = (value: string) => {
+        setSearchProduct(products.filter((product)=>product.category_id === Number(value)))
       };
+      
+      
 
-      const addCartItem = useCartStore(state => state.addCartItem);
-
-    return(
-        <div className={style.product}>
-        <Search placeholder="Введите название товара" onSearch={onSearch} enterButton  size="large" id={style.searchInput}/>
+    const filterOption = (input: string, option?: { label: string; value: string }) =>
+        (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+    return (
+      <div className={style.product}>
+        <div>
+            <Search
+            placeholder="Введите название товара"
+            onSearch={onSearch}
+            enterButton
+            size="large"
+            id={style.searchInput}
+            />
+            <Select
+            showSearch
+            placeholder="Категория"
+            optionFilterProp="children"
+            onChange={onChange}
+            filterOption={filterOption}
+            options={categories.map(category => ({value:category.id?.toString() as string, label:category.category_name}))}
+            />
+        </div>
+        
         <div className={style.productList}>
-            {searchProduct.map((product => (
-                <div className={style.productItem} key={product.id}>
-                    <img src={cup} alt={product.productName} width="250"/>
-                    <p className={style.productName}>{product.productName}</p>
-                    <p className={style.productPrice}>Цена: {product.price}₽</p>
-                    <p className={style.productSize}>Размер: {product.size}</p>
-                    <a className={style.btnProductPay} href={`https://wa.me/79282501420?text=Здравствуйте%2C+хочу+купить+${product.productName}`}>КУПИТЬ <BadgeRussianRuble className={style.badgeRussianRuble}/></a>
-                    <button className={style.btnProductCart} onClick={() => addCartItem({product:product,count:1})}>В корзину <ShoppingBasket className={style.shoppingBasket}/></button>
-                </div>
-            )))}
+          {searchProduct.map((product) => (
+            <ProductListItem product={product} key={product.id} />
+          ))}
         </div>
-        </div>
-
-    )
-}
+      </div>
+    );
+  };
+  

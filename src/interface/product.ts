@@ -1,7 +1,8 @@
 export interface IProduct{
     id?:number,
-    productName:string,
+    product_name:string,
     price:string,
     size:string,
-    imageSrc?:string,
+    category_id:number,
+    image_src?:string[],
 }

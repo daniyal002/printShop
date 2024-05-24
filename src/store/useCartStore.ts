@@ -4,7 +4,7 @@ import { ICart } from "../interface/cart"
 interface ICartStore{
     carts:ICart[];
     setCarts: (carts:ICart[]) => void
-    addCartItem: (cartItem:ICart) => void
+        addCartItem: (cartItem:ICart) => void
     updateCartItem: (id:number,updateCartItem:Partial<ICart>) => void
     deleteCartItem: (id:number) => void
     total: () => number
@@ -37,7 +37,7 @@ export const useCartStore = create<ICartStore>((set,get)=>({
         }) 
 
         if(isProductInCarts){
-            get().updateCartItem(isProductInCartsId as number,{id:isProductInCartsId, product:cartItem.product, count:isProductInCartsCount + 1})
+            get().updateCartItem(isProductInCartsId as number,{id:isProductInCartsId, product:cartItem.product, count:isProductInCartsCount + cartItem.count})
         }else{
             set({carts:[...currentCarts, {id:newId,product:cartItem.product,count:cartItem.count}]})
             localStorage.setItem("carts",JSON.stringify(get().carts))

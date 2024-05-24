@@ -9,7 +9,7 @@ export function CartTotal(){
     const carts = useCartStore(state => state.carts)
 
     const readableCarts = carts.map(cart => ({
-        Товар: cart.product.productName,
+        Товар: cart.product.product_name,
         Цена: cart.product.price,
         Размер: cart.product.size,
         Количество: cart.count
@@ -18,7 +18,7 @@ export function CartTotal(){
     return(
         <div className={style.totalContainer}>
             <div className={style.total}>
-                <p>Общая сумма: <span>{total()}</span></p>
+                <p>Общая сумма: <span>{total()}₽</span></p>
                 <p>Количество товаров: <span>{carts.length}</span></p>
                 <a className={style.btnProductPay} href={`https://wa.me/79282501420?text=Здравствуйте%2C+хочу+купить+${JSON.stringify(readableCarts, null, 2)}%2C+Общая+сумма:+${total()}%2C+Количество+товаров:+${carts.length}`}>КУПИТЬ <BadgeRussianRuble className={style.badgeRussianRuble}/></a>
             </div>
