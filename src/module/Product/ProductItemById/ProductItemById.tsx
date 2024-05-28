@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import style from './ProductItemById.module.scss';
 import { getProductById } from "../../../hook/productHook";
 import { useState } from "react";
+import { baseURL } from "../../../api/interseptots";
 
 // Конфигурация слайдера
 
@@ -65,7 +66,7 @@ export function ProductItemById() {
           {productData.image_src?.map((src, index) => (
             <div key={index} className={style.sliderImage}>
               <img
-                src={`http://localhost:3030/uploads/${src}`}
+                src={`${baseURL}/uploads/${src}`}
                 alt={`${productData.product_name} ${index + 1}`}
                 width="250"
                 className={style.responsiveImage}
