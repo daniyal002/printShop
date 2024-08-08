@@ -2,6 +2,58 @@
     display: flex;
     flex-direction: column;
     padding: 0 10px;
+    align-items: center;
+
+    .productFilter {
+        position: fixed;
+        width: 95%;
+        background-color: rgb(255, 255, 255);
+        top: -100%; /* Начальное положение за пределами экрана */
+        z-index: 99;
+        padding: 10px 50px;
+        border-radius: 0px 0px 10px 10px;
+        transition: top 0.5s cubic-bezier(0.86, 0, 0.07, 1); /* Добавляем переход для свойства top */
+        .productFilterColumn{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .headerCart{
+            button{
+                background-color: inherit;
+                border: 0;
+                cursor: pointer;
+                .shoppingCart{
+                    color: #ff8a05;
+                    transition: 0.5s;
+                    &:hover{
+                        color: #ca6f07;
+                    }
+                }
+                a{
+                    position: relative;
+                    text-decoration: none;
+                    color: #000;
+                    span{
+                        border-radius: 10px;
+                        font-size: 16px;
+                        padding: 2px;
+                        color: rgb(44, 168, 91);
+                        font-weight: 700;
+                        position: absolute;
+                        right: -4px;
+                        top:-41px
+                    }
+                }
+    
+            }
+            
+        }
+    }
+    
+    .productFilter.visible {
+        top: 0; /* Показываем блок при прокрутке вниз */
+    }
 }
 
 .productList{
@@ -14,4 +66,8 @@
 
 #searchInput{
     margin: 10px 0;
+}
+
+.productListPagination{
+    margin: 20px 0;
 }

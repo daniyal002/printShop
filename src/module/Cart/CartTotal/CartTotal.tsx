@@ -1,8 +1,7 @@
 import { BadgeRussianRuble } from 'lucide-react'
 import { useCartStore } from '../../../store/useCartStore'
 import style from './CartTotal.module.scss'
-
-
+import { tel } from '../../../api/interseptots'
 
 export function CartTotal(){
     const total = useCartStore(state => state.total)
@@ -10,17 +9,19 @@ export function CartTotal(){
 
     const readableCarts = carts.map(cart => ({
         Товар: cart.product.product_name,
-        Цена: cart.product.price,
-        Размер: cart.product.size,
         Количество: cart.count
     }));
+    const totalCount = carts.reduce((sum,current) => sum + current.count,0 )
+    const message = readableCarts.map(cart => 
+         Object.values(cart).join(', ')
+     ).join('; ');
 
     return(
         <div className={style.totalContainer}>
             <div className={style.total}>
                 <p>Общая сумма: <span>{total()}₽</span></p>
-                <p>Количество товаров: <span>{carts.length}</span></p>
-                <a className={style.btnProductPay} href={`https://wa.me/79282501420?text=Здравствуйте%2C+хочу+купить+${JSON.stringify(readableCarts, null, 2)}%2C+Общая+сумма:+${total()}%2C+Количество+товаров:+${carts.length}`}>КУПИТЬ <BadgeRussianRuble className={style.badgeRussianRuble}/></a>
+                <p>Количество товаров: <span>{totalCount}</span></p>
+                <a className={style.btnProductPay} href={`https://wa.me/${tel}?text=Здравствуйте%2C+хочу+купить+${message}%2C+Общая+сумма:+${total()}%2C+Количество+товаров:+${totalCount}`} target="_blank">КУПИТЬ <BadgeRussianRuble className={style.badgeRussianRuble}/></a>
             </div>
         </div>
     )

@@ -8,7 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import style from './ProductItemById.module.scss';
 import { getProductById } from "../../../hook/productHook";
 import { useState } from "react";
-import { baseURL } from "../../../api/interseptots";
+import { baseURL, tel } from "../../../api/interseptots";
 
 // Конфигурация слайдера
 
@@ -62,18 +62,28 @@ export function ProductItemById() {
     <div className="containerPostItem">
         <Link to={'/'} className={style.btnBack}><ArrowLeft size={48} /> назад</Link>
         <div className={style.slider}>
-       <Slider {...settings}>
-          {productData.image_src?.map((src, index) => (
-            <div key={index} className={style.sliderImage}>
-              <img
-                src={`${baseURL}/uploads/${src}`}
-                alt={`${productData.product_name} ${index + 1}`}
-                width="250"
-                className={style.responsiveImage}
-              />
-            </div>
-          ))}
-        </Slider> 
+          {productData.image_src && productData?.image_src?.length >= 2 ? (
+            <Slider {...settings}>
+            {productData.image_src?.map((src, index) => (
+              <div key={index} className={style.sliderImage}>
+                <img
+                  src={`${baseURL}/uploads/${src}`}
+                  alt={`${productData.product_name} ${index + 1}`}
+                  width="250"
+                  className={style.responsiveImage}
+                />
+              </div>
+            ))}
+          </Slider> 
+          ) : (
+            <img
+                  src={`${baseURL}/uploads/${productData.image_src && productData?.image_src[0]}`}
+                  alt={`${productData.product_name}`}
+                  width="250"
+                  className={style.responsiveImage}
+                />
+          ) }
+       
         </div>
       <div className={style.productItem}>
         
@@ -82,7 +92,7 @@ export function ProductItemById() {
         <p className={style.productPrice}>Цена: {productData.price}₽</p>
         <p className={style.productSize}>Размер: {productData.size}</p>
         <div className={style.productButton}>
-          <a className={style.btnProductPay} href={`https://wa.me/79282501420?text=Здравствуйте%2C+хочу+купить+${productData.product_name}`}>
+          <a className={style.btnProductPay} href={`https://wa.me/${tel}?text=Здравствуйте%2C+хочу+купить+${productData.product_name}`}>
             КУПИТЬ <BadgeRussianRuble className={style.badgeRussianRuble} />
           </a>
           <button className={style.btnProductCart} onClick={() => addCartItem({ product: productData, count: countInput })}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Form, Button, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -30,6 +30,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, type
     register,
     handleSubmit,
     formState: { errors },
+    reset
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: initialValues || { product_name: '', price: "" , size: "", category_id: 0},
@@ -38,14 +39,24 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, type
   const categories = useCategoryStore(state => state.categories)
   const [fileList, setFileList] = useState<ExtendedFile[]>([]);
 
-  const handleUploadChange = ({ fileList }: any) => {
-    setFileList(fileList.map((file:any) => file.originFileObj)); // Ensure the file objects are passed
-  };
+  // const handleUploadChange = ({ fileList }: any) => {
+  //   setFileList(fileList.map((file:any) => file.originFileObj)); // Ensure the file objects are passed
+  // };
 
+  const handleUploadChange = ({fileList }: any) => {
+    // This function will now check if the file exists and handle it appropriately
+    setFileList(fileList.filter((file: any) => file.originFileObj).map((file: any) => file.originFileObj));
+};
   const onFormSubmit = (data: IProduct) => {
     onSubmit(data, fileList);
-    console.log("fileList",fileList)
   };
+
+
+  useEffect(()=>{
+    reset(initialValues)
+  },[initialValues])
+
+  useEffect(()=>{console.log(fileList)},[fileList])
 
   return (
     <Form layout="inline" onFinish={handleSubmit(onFormSubmit)} className={style.productForm}>
@@ -91,8 +102,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, type
             uid: file.uid,
             name: file.name,
             status: 'done',
-            url: URL.createObjectURL(file),
-          })) as any}
+            url: file ? URL.createObjectURL(file) : undefined, // Only create URL if file exists
+          }))}
         >
           <Button icon={<UploadOutlined />}>Загрузить изображения</Button>
         </Upload>
