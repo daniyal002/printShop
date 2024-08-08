@@ -9,5 +9,4 @@ dist
 .vscode
 
 # Исключаем файл Dockerfile и .dockerignore из контекста сборки
-Dockerfile
 .dockerignore
