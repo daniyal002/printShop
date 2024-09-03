@@ -58,3 +58,16 @@ export const uploadProductImages = () => {
   });
   return { mutate };
 };
+
+export const uploadProductVideo = () => {
+  const { mutate } = useMutation({
+    mutationFn: ({ productId, video }: { productId: number, video: File }) => {
+      const formData = new FormData();
+     formData.append('file', video);
+      return productsService.uploadProductVideo(productId, formData);
+    },onSuccess: () => { 
+      message.success("Видео успешно добавлено")
+    }
+  });
+  return { mutate };
+};

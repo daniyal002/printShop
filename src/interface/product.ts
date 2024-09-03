@@ -5,4 +5,5 @@ export interface IProduct{
     size:string,
     category_id:number,
     image_src?:string[],
+    video_src?:string,
 }

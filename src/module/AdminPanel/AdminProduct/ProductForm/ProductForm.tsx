@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Form, Button, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { IProduct } from '../../../../interface/product';
 import style from './ProductForm.module.scss';
 import { useCategoryStore } from '../../../../store/useCategoryStore';
@@ -11,101 +9,135 @@ import { Input } from '../../../../components/Input/Input';
 
 interface ProductFormProps {
   initialValues?: IProduct;
-  onSubmit: (data: IProduct, images: File[]) => void;
+  onSubmit: (data: IProduct, images: File[], video: File) => void;
   type: "Добавить" | "Изменить";
+  isModalOpen: boolean;
 }
+
 interface ExtendedFile extends File {
   uid: string;
 }
 
-const schema = yup.object().shape({
-  product_name: yup.string().required('Поле продукт обязательное'),
-  price: yup.string().required('Поле цена обязательное'),
-  size: yup.string().required('Поле размер обязательное'),
-  category_id: yup.number().required('Поле категория обязательное'),
-});
 
-const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, type }) => {
+const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, type,isModalOpen }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: initialValues || { product_name: '', price: "" , size: "", category_id: 0},
-  });
+  } = useForm<IProduct>();
 
-  const categories = useCategoryStore(state => state.categories)
+  const categories = useCategoryStore(state => state.categories);
   const [fileList, setFileList] = useState<ExtendedFile[]>([]);
+  const [videoList, setVideoList] = useState<ExtendedFile | undefined>();
 
-  // const handleUploadChange = ({ fileList }: any) => {
-  //   setFileList(fileList.map((file:any) => file.originFileObj)); // Ensure the file objects are passed
-  // };
-
-  const handleUploadChange = ({fileList }: any) => {
-    // This function will now check if the file exists and handle it appropriately
+  const handleUploadImagesChange = ({ fileList }: any) => {
     setFileList(fileList.filter((file: any) => file.originFileObj).map((file: any) => file.originFileObj));
-};
-  const onFormSubmit = (data: IProduct) => {
-    onSubmit(data, fileList);
   };
 
+  const handleUploadVideoChange = (info: any) => {
+    const { fileList } = info;
+    if (fileList.length > 0) {
+      setVideoList(fileList[fileList.length - 1].originFileObj);
+    } else {
+      setVideoList(undefined);
+    }
+  };
+
+  const onFormSubmit = (data: IProduct) => {
+    onSubmit(data, fileList, videoList as File);
+  };
+
+  // Reset form values when initialValues change
+  useEffect(() => {
+    if(!initialValues){
+      reset({
+        product_name:undefined,
+        price:undefined,
+        size:undefined,
+        category_id:undefined,
+      })
+    }else if(initialValues){
+      reset({
+        id:initialValues.id,
+        product_name:initialValues.product_name,
+        price:initialValues.price,
+        size:initialValues.size,
+        category_id:initialValues.category_id,
+      })
+    }
+  }, [initialValues, reset]);
 
   useEffect(()=>{
-    reset(initialValues)
-  },[initialValues])
-
-  useEffect(()=>{console.log(fileList)},[fileList])
+    setFileList([])
+    setVideoList(undefined)
+    console.log(isModalOpen)
+  },[initialValues, reset,isModalOpen])
 
   return (
     <Form layout="inline" onFinish={handleSubmit(onFormSubmit)} className={style.productForm}>
-      <Form.Item >
+      <Form.Item>
         <div className={style.productFormItem}>
-            <Input label='Продукт' placeholder='Продукт' register={register} registerValue='product_name' type='text'/>
-            {errors.product_name && <span>{errors.product_name?.message}</span>}
+          <Input label='Продукт' placeholder='Продукт' register={register} registerValue='product_name' type='text' />
+          {errors.product_name && <span>{errors.product_name?.message}</span>}
         </div>
       </Form.Item>
       <Form.Item>
         <div className={style.productFormItem}>
-            <Input label='Цена' placeholder='Цена' register={register} registerValue='price' type='text'/>
-            {errors.price && <span>{errors.price?.message}</span>}
+          <Input label='Цена' placeholder='Цена' register={register} registerValue='price' type='text' />
+          {errors.price && <span>{errors.price?.message}</span>}
         </div>
       </Form.Item>
       <Form.Item>
         <div className={style.productFormItem}>
-            <Input label='Размер' placeholder='Размер' register={register} registerValue='size' type='text'/>
-            {errors.size && <span>{errors.size?.message}</span>}
+          <Input label='Размер' placeholder='Размер' register={register} registerValue='size' type='text' />
+          {errors.size && <span>{errors.size?.message}</span>}
         </div>
       </Form.Item>
-      <Form.Item >
+      <Form.Item>
         <div className={style.productFormItem}>
-            <label className={style.productFormItemSelectLabel}>Категория</label>
-            <select
-            {...register('category_id')}
+          <label className={style.productFormItemSelectLabel}>Категория</label>
+          <select
+            {...register('category_id',{valueAsNumber:true})}
             style={{ width: 120 }}
-            defaultValue={initialValues?.category_id}
-            >
-                <option value="" disabled selected hidden className={style.placeholderOption}>Категория</option>
-                {categories.map(category => (
-                    <option value={category.id} key={category.id}>{category.category_name}</option>
-                ))}
-            </select>
+            defaultValue={initialValues?.category_id || ''}
+          >
+            <option value="" disabled hidden>Категория</option>
+            {categories.map(category => (
+              <option value={category.id} key={category.id}>{category.category_name}</option>
+            ))}
+          </select>
         </div>
       </Form.Item>
       <Form.Item>
-      <Upload 
-          multiple 
-          beforeUpload={() => false} // Prevent auto upload
-          onChange={handleUploadChange}
+        <Upload
+          multiple
+          beforeUpload={() => false}
+          onChange={handleUploadImagesChange}
+          listType="picture"
           fileList={fileList.map(file => ({
             uid: file.uid,
             name: file.name,
             status: 'done',
-            url: file ? URL.createObjectURL(file) : undefined, // Only create URL if file exists
+            url: file ? URL.createObjectURL(file) : undefined,
           }))}
         >
           <Button icon={<UploadOutlined />}>Загрузить изображения</Button>
+        </Upload>
+      </Form.Item>
+      <Form.Item>
+        <Upload
+          beforeUpload={() => false}
+          onChange={handleUploadVideoChange}
+          fileList={videoList ? [{
+            uid: 'video',
+            name: videoList.name,
+            status: 'done',
+            url: URL.createObjectURL(videoList),
+          }] : []}
+          accept="video/*"
+        >
+          <Button icon={<UploadOutlined />}>Загрузить Видео</Button>
         </Upload>
       </Form.Item>
       <Form.Item>

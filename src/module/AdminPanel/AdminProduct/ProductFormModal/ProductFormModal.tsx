@@ -2,7 +2,7 @@ import { Button, Modal } from 'antd'
 import { useEffect, useState } from 'react';
 import ProductForm from '../ProductForm/ProductForm';
 import { IProduct } from '../../../../interface/product';
-import { updateProduct, uploadProductImages } from '../../../../hook/productHook';
+import { updateProduct, uploadProductImages, uploadProductVideo } from '../../../../hook/productHook';
 
 
 interface Props{
@@ -13,9 +13,11 @@ interface Props{
   }
 
 export function ProductFormModal({isModalOpen, handleOk, handleCancel,values}:Props){
-   
+  
+
   const { mutate: updateMutation } = updateProduct();
   const { mutate: uploadImagesMutation } = uploadProductImages();
+  const { mutate: uploadVideoMutation } = uploadProductVideo();
   const [updateValue,setUpdateValue] = useState<IProduct>()
 
   useEffect(()=>{
@@ -24,11 +26,14 @@ export function ProductFormModal({isModalOpen, handleOk, handleCancel,values}:Pr
     }
   },[values])
 
-    const handleUpdate = (data: IProduct, images: File[]) => {
+    const handleUpdate = (data: IProduct, images: File[], video: File) => {
         updateMutation(data, {
           onSuccess: (updatedProduct) => {
             if(images.length > 0){
               uploadImagesMutation({ productId: updatedProduct.id as number, images });
+            }
+            if(video){
+              uploadVideoMutation({ productId: updatedProduct.id as number, video })
             }
           }
         });
@@ -41,7 +46,7 @@ export function ProductFormModal({isModalOpen, handleOk, handleCancel,values}:Pr
                 <Button onClick={handleCancel}>Закрыть</Button>
               </>
             )}>
-            {updateValue && (<ProductForm initialValues={updateValue} onSubmit={handleUpdate} type="Изменить" />)}
+            {updateValue && (<ProductForm initialValues={updateValue} onSubmit={handleUpdate} type="Изменить" isModalOpen={isModalOpen}/>)}
         </Modal>
         </>
     )

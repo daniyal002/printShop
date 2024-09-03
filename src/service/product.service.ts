@@ -32,5 +32,12 @@ export const productsService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
+  },
+
+  async uploadProductVideo(productId: number, formData: FormData) {
+    const response = await axiosClassic.post(`/products/${productId}/upload-video`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
   }
 };

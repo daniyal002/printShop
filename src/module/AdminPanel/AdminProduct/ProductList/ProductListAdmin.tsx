@@ -5,7 +5,7 @@ import ProductForm from '../ProductForm/ProductForm';
 import useMessage from 'antd/es/message/useMessage';
 import style from './ProductList.module.scss';
 import { useProductStore } from '../../../../store/useProductStore';
-import { addProduct, deleteProduct, uploadProductImages,productData } from '../../../../hook/productHook';
+import { addProduct, deleteProduct, uploadProductImages,productData, uploadProductVideo } from '../../../../hook/productHook';
 import { useCategoryStore } from '../../../../store/useCategoryStore';
 import { categoryData } from '../../../../hook/categoryHook';
 import { ICategory } from '../../../../interface/category';
@@ -26,6 +26,7 @@ const ProductListAdmin: React.FC = () => {
   const { mutate: addMutation } = addProduct();
   const { mutate: deleteMutation, errorProduct } = deleteProduct();
   const { mutate: uploadImagesMutation } = uploadProductImages();
+  const { mutate: uploadVideoMutation } = uploadProductVideo();
   const setCategories  = useCategoryStore(state => state.setCategories);
  
   const {categoriesData,isSuccess:isSuccessCategory} = categoryData()
@@ -69,11 +70,15 @@ const ProductListAdmin: React.FC = () => {
     if (errorProduct) errorMessage();
   }, [errorProduct]);
 
-  const handleAdd = (data: IProduct, images: File[]) => {
+  const handleAdd = (data: IProduct, images: File[], video: File) => {
     addMutation(data, {
       onSuccess: (newProduct) => {
         if(images.length > 0){
           uploadImagesMutation({ productId: newProduct.id as number, images });
+        }
+
+        if(video){
+          uploadVideoMutation({productId: newProduct.id as number, video })
         }
     }
     });
@@ -248,7 +253,7 @@ const ProductListAdmin: React.FC = () => {
       {contextHolder}
       <ProductFormModal isModalOpen={isModalOpen}  handleOk={handleOk} handleCancel={handleCancel} values={product as IProduct}/>
       <div className={style.productPanel}>
-        <ProductForm onSubmit={handleAdd} type="Добавить" />
+        <ProductForm onSubmit={handleAdd} type="Добавить" isModalOpen={isModalOpen}/>
         <Table dataSource={products} columns={columns} loading={isLoading} pagination={{ pageSize: Number(pageSize)}} scroll={{ y: '80vh' }} 
         footer={(_) => (
           <>
