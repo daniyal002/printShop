@@ -103,7 +103,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, type
             defaultValue={initialValues?.category_id || ''}
           >
             <option value="" disabled hidden>Категория</option>
-            {categories.map(category => (
+            {categories && categories.map(category => (
               <option value={category.id} key={category.id}>{category.category_name}</option>
             ))}
           </select>

@@ -5,8 +5,7 @@ import { ArrowLeft, BadgeRussianRuble, ShoppingBasket } from "lucide-react";
 import style from "./ProductItemById.module.scss";
 import { getProductById } from "../../../hook/productHook";
 import { useState } from "react";
-import { baseURL, tel } from "../../../api/interseptots";
-import ReactPlayer from "react-player";
+import {  tel } from "../../../api/interseptots";
 import ProductItemByIdCarusel from "./ProductItemByIdCarusel";
 
 // Конфигурация слайдера
@@ -33,14 +32,8 @@ export function ProductItemById() {
         <ArrowLeft size={48} /> назад
       </Link>
 
-      <ProductItemByIdCarusel images={productData?.image_src as string[]} />
-      <ReactPlayer
-        url={`${baseURL}${productData.video_src}`}
-        loop
-        playing
-        width={"100%"}
-        style={{textAlign:"center", width:"100%", margin:"10px auto"}}
-      />
+      <ProductItemByIdCarusel images={productData?.image_src as string[]} video={productData?.video_src as string}/>
+      
       <div className={style.productItem}>
         <p className={style.productName}>{productData.product_name}</p>
         <p className={style.productPrice}>Цена: {productData.price}₽</p>

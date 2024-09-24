@@ -4,9 +4,9 @@ import style from "./ProductListItem.module.scss";
 import { BadgeRussianRuble, ShoppingBasket } from "lucide-react";
 import { useCartStore } from "../../../../store/useCartStore";
 import { useState } from "react";
+import {  tel } from "../../../../api/interseptots";
+import ProductItemByIdCarusel from "../../ProductItemById/ProductItemByIdCarusel";
 import { Link } from "react-router-dom";
-import { baseURL, tel } from "../../../../api/interseptots";
-import LazyImage from "../../../../components/LazyImage/LazyImage";
 
 interface Props {
   product: IProduct;
@@ -23,19 +23,14 @@ export function ProductListItem({ product }: Props) {
   return (
     <>
       <div className={style.productItem} key={product.id}>
-        <Link to={`product/${product.id}`}>
-        <LazyImage 
-            src={`${baseURL}/uploads/${product.image_src?.[0]}`} 
-            alt={product.product_name} 
-            width={250} 
-            className={style.responsiveImage} 
-            srcSet={`${baseURL}/uploads/${product.image_src?.[0]} 800w, ${baseURL}/uploads/${product.image_src?.[0]} 400w`} // Assuming the CDN handles resizing
-            sizes="(max-width: 600px) 400px, 800px"
-          />
-        </Link>
+      <ProductItemByIdCarusel images={product?.image_src as string[]} video={product?.video_src}/>
+        <div className={style.ProductItemInfo}>
+        <Link to={`product/${product.id}`} className={style.ProductItemInfoLink}>
         <p className={style.productName}>{product.product_name}</p>
         <p className={style.productPrice}>Цена: {product.price}₽</p>
         <p className={style.productSize}>Размер: {product.size}</p>
+        </Link>
+
         <div className={style.productButton}>
           <a
             className={style.btnProductPay}
@@ -61,6 +56,8 @@ export function ProductListItem({ product }: Props) {
             <Button onClick={() => setCountInput((prev) => prev + 1)}>+</Button>
           </Space.Compact>
         </div>
+        </div>
+
       </div>
     </>
   );
