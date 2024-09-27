@@ -14,3 +14,23 @@ body{
     margin: 0;
     padding: 0;
 }
+
+.ant-carousel .slick-prev,
+.ant-carousel .slick-next {
+
+ color: #000;
+ font-weight: 700;
+}
+
+:where(.css-dev-only-do-not-override-1bgphbz).ant-carousel .slick-prev::after, :where(.css-dev-only-do-not-override-1bgphbz).ant-carousel .slick-next::after {
+display: inline-block;
+    border-inline-width: 5px 0;
+    border-block-width: 5px 0;
+
+}
+
+// .ant-carousel .slick-prev:before,
+// .ant-carousel .slick-next:before {
+//   font-size: 30px; /* Размер иконок стрелок */
+//   color: white; /* Цвет иконок стрелок */
+// }
