@@ -9,14 +9,53 @@
         background-color: #fff;
         padding: 10px;
     }
-    
+
     .headerLogo{
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        a{
+            text-decoration: none;
+        }
         span{
             font-size: 32px;
             font-weight: 700;
             a{
-                text-decoration: none;
                 color: rgb(44, 168, 91);
+            }
+            @media (max-width:420px) {
+                font-size: 25px;
+            }
+            @media (max-width:367px) {
+                font-size: 20px;
+            }
+
+        }
+        p{
+            a{
+
+
+            color: rgb(44, 168, 91);
+            font-size: 20px;
+            font-weight: 600;
+            @media (max-width:420px) {
+                font-size: 18px;
+            }
+            @media (max-width:367px) {
+                font-size: 16px;
+            }
+        }
+        }
+        .phoneInfo{
+
+            color: rgb(44, 168, 91);
+            font-size: 16px;
+            font-weight: 600;
+            @media (max-width:420px) {
+                font-size: 14px;
+            }
+            @media (max-width:367px) {
+                font-size: 12px;
             }
         }
     }
@@ -24,9 +63,9 @@
     .headerIcon{
         display: flex;
         align-items: center;
-        gap: 30px;
+        gap: 25px;
     }
-    
+
     .headerCart{
         button{
             background-color: inherit;
@@ -56,7 +95,6 @@
             }
 
         }
-        
+
     }
 }
-

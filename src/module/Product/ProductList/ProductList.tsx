@@ -45,9 +45,14 @@ export const ProductList: React.FC = () => {
   };
 
   const onChange = (value: string) => {
-    setSearchProduct(
-      products.filter((product) => product.category_id === Number(value))
-    );
+    if (value) {
+      setSearchProduct(
+        products.filter((product) => product.category_id === Number(value))
+      );
+    } else {
+      // Если значение пустое, то сбрасываем список продуктов к исходному
+      setSearchProduct(products);
+    }
     setCurrentPage(1);
   };
 
@@ -97,9 +102,11 @@ export const ProductList: React.FC = () => {
         />
         <Select
           showSearch
-          placeholder="Категория"
+          allowClear
+          placeholder="Каталог"
           optionFilterProp="children"
           onChange={onChange}
+          style={{width:"100%"}}
           filterOption={filterOption}
           options={categories.map((category) => ({
             value: category.id?.toString() as string,
@@ -122,14 +129,17 @@ export const ProductList: React.FC = () => {
         <div className={style.productFilterColumn}>
           <Select
             showSearch
-            placeholder="Категория"
+            placeholder="Каталог"
             optionFilterProp="children"
+            style={{width:"100%"}}
             onChange={onChange}
             filterOption={filterOption}
             options={categories.map((category) => ({
               value: category.id?.toString() as string,
               label: category.category_name,
             }))}
+          allowClear
+
           />
           <div className={style.headerCart}>
             <button>
