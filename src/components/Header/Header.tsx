@@ -18,7 +18,7 @@ export function Header(){
             <div className={style.headerContainer}>
                     <div className={style.headerLogo}>
                         <span><Link to={`/`}>Фабрика кружек</Link></span>
-                        <p className={style.phoneInfo}>Нажмите на номер чтобы перейти на WhatsAap</p>
+                        <p className={style.phoneInfo}>Нажмите на номер чтобы перейти в чат</p>
                         <p><a href={`https://wa.me/${tel}`}>{formattedTel}</a></p>
                     </div>
                     <div className={style.headerIcon}>
