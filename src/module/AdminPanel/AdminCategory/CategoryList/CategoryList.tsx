@@ -1,17 +1,15 @@
 import React, { useEffect } from 'react';
-import { Table, Button, TableColumnsType } from 'antd';
-import { useCategoryStore } from '../../../../store/useCategoryStore';
+import { Table, TableColumnsType } from 'antd';
 import CategoryForm from '../CategoryForm/CategoryForm';
 import { ICategory } from '../../../../interface/category';
 import { addCategory, categoryData, deleteCategory, updateCategory } from '../../../../hook/categoryHook';
 import useMessage from 'antd/es/message/useMessage';
 import style from "./CategoryList.module.scss"
+import { baseURL } from '../../../../api/interseptots';
 
 const CategoryList: React.FC = () => {
-  const { setCategories,categories } =
-    useCategoryStore();
- 
-  const {categoriesData,isSuccess,isLoading} = categoryData()
+
+  const {categoriesData,isLoading} = categoryData()
   const [messageApi, contextHolder] = useMessage()
 
   const {mutate: addMutation} = addCategory();
@@ -26,21 +24,17 @@ const CategoryList: React.FC = () => {
     });
   };
 
-  useEffect(()=>{
-    if(isSuccess){
-      setCategories(categoriesData as ICategory[])
-    }
-  },[isSuccess,categoriesData])
+
 
   useEffect(()=>{if(errorCategory)errorMessage()},[errorCategory])
 
-  const handleAdd = (data:ICategory) => {
-    addMutation(data.category_name);
-  };
+    const handleAdd = (data: { category: ICategory; file?: File }) => {
+      addMutation(data); // передаем объект с данными категории и файлом
+    };
 
-  const handleUpdate = (data:ICategory) => {
-    updateMutation(data);
-  };
+    const handleUpdate = (data: { category: ICategory; file?: File }) => {
+      updateMutation(data); // передаем объект с данными категории и файлом (если есть)
+    };
 
   const handleDelete = (id: number) => {
     deleteMutation(id);
@@ -54,14 +48,28 @@ const CategoryList: React.FC = () => {
       sorter:false,
     },
     {
-      title: 'Изменить',
+      title: 'Изображение',
+      key: 'image_url',
+      render: (record:ICategory) => (
+        <>
+        {record.image_url ? (
+        <img src={`${baseURL}/uploads/${record.image_url}`} alt={record.category_name} width={100}/>
+        ) : (
+          <p>Нет изображения</p>
+        )}
+        </>
+      )
+
+    },
+    {
+      title: 'Действия',
       key: 'actions',
       render: (record:ICategory) => (
           <div className={style.categoryListRowAction}>
-            <CategoryForm initialValues={record} onSubmit={handleUpdate} type='Изменить'/>
-            <Button danger onClick={() => handleDelete(record.id as number)}>
+            <CategoryForm initialValues={record} onSubmit={handleUpdate} type='Изменить' allCategory={categoriesData as ICategory[]}/>
+            <button  className={style.categoryListRowActionDelete} onClick={() => handleDelete(record.id as number)}>
               Удалить
-            </Button>
+            </button>
           </div>
       ),
     },
@@ -71,8 +79,8 @@ const CategoryList: React.FC = () => {
     <>
     {contextHolder}
     <div className={style.categoryPanel}>
-      <CategoryForm onSubmit={handleAdd} type='Добавить'/>
-      <Table dataSource={categories} columns={columns} loading={isLoading} pagination={{ pageSize: 10}} scroll={{ y: "80vh" }}/>
+      <CategoryForm onSubmit={handleAdd} type='Добавить' allCategory={categoriesData as ICategory[]}/>
+      <Table dataSource={categoriesData} columns={columns} loading={isLoading} pagination={{ pageSize: 10}} scroll={{ y: "80vh" }}/>
     </div>
     </>
   );

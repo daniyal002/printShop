@@ -8,4 +8,20 @@
     display: flex;
     flex-direction: column;
     row-gap: 10px;
+
+    .categoryListRowActionDelete{
+        background-color: rgb(214, 69, 69);
+        transition: 0.5s;
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+
+
+        &:hover{
+        background-color: rgb(202, 45, 45);
+
+        }
+    }
 }

@@ -1,12 +1,29 @@
-.categoryFormInput{
-    height: 20px;
-    padding: 5px;
-    border-radius: 10px;
-    border: 2px solid #6bbb8a;
-    outline:none;
-    transition: 0.2s;
 
-    &:focus{
-        border: 2px solid rgb(20, 126, 94);
+
+.formItem{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap:5px;
+    .categoryFormInput{
+        height: 20px;
+        padding: 5px;
+        border-radius: 6px;
+        border:1px solid #d9d9d9;
+        outline:none;
+        transition: 0.2s;
+        width: 100%;
+        &:focus{
+            border: 2px solid rgb(20, 126, 94);
+        }
+    }
+
+    .formItemError{
+        color: red;
+        font-weight: 600;
+    }
+
+    .categoryParentSelect{
+        width: 100px;
     }
 }
