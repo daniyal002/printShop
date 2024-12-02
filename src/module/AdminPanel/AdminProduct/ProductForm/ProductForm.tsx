@@ -4,8 +4,8 @@ import { Form, Button, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { IProduct } from '../../../../interface/product';
 import style from './ProductForm.module.scss';
-import { useCategoryStore } from '../../../../store/useCategoryStore';
 import { Input } from '../../../../components/Input/Input';
+import { categoryData } from '../../../../hook/categoryHook';
 
 interface ProductFormProps {
   initialValues?: IProduct;
@@ -27,7 +27,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, type
     reset
   } = useForm<IProduct>();
 
-  const categories = useCategoryStore(state => state.categories);
+  // const categories = useCategoryStore(state => state.categories);
+  const {categoriesData} = categoryData()
   const [fileList, setFileList] = useState<ExtendedFile[]>([]);
   const [videoList, setVideoList] = useState<ExtendedFile | undefined>();
 
@@ -103,7 +104,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, type
             defaultValue={initialValues?.category_id || ''}
           >
             <option value="" disabled hidden>Категория</option>
-            {categories && categories.map(category => (
+            {categoriesData && categoriesData.map(category => (
               <option value={category.id} key={category.id}>{category.category_name}</option>
             ))}
           </select>

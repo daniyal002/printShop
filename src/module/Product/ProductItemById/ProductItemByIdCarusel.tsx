@@ -62,8 +62,8 @@ const ProductItemByIdCarusel = ({ images, video }: Props) => {
               loop
               playing={isPlaying}
               controls
-              width={"100%"}
-              height={424}
+              width={300}
+              height={400}
               style={{
                 textAlign: "center",
                 width: "100%",
@@ -79,6 +79,7 @@ const ProductItemByIdCarusel = ({ images, video }: Props) => {
           <div style={{ display: "inline", margin: "0 auto" }} key={index}>
             <Image
               width={300}
+              height={400}
               src={`${baseURL}/uploads/${image}`}
               style={contentStyle}
             />

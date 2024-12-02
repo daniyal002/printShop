@@ -8,6 +8,11 @@ import { message } from "antd";
     return {categoriesData, isLoading, error}
   }
 
+  export const categoryDataHierarchy = () => {
+    const { data: categoriesDataHierarchy, isLoading, error} = useQuery({queryKey:['categories'],queryFn: categoriesService.getCategoriesHierarchy})
+    return {categoriesDataHierarchy, isLoading, error}
+  }
+
   export const addCategory = () => {
     const queryClient = useQueryClient();
 

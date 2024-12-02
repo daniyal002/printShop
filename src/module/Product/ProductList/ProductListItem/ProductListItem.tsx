@@ -25,7 +25,7 @@ export function ProductListItem({ product }: Props) {
       <div className={style.productItem} key={product.id}>
       <ProductItemByIdCarusel images={product?.image_src as string[]} video={product?.video_src}/>
         <div className={style.ProductItemInfo}>
-        <Link to={`product/${product.id}`} className={style.ProductItemInfoLink}>
+        <Link to={`/productItem/${product.id}`} className={style.ProductItemInfoLink}>
         <p className={style.productName}>{product.product_name}</p>
         <p className={style.productPrice}>Цена: {product.price}₽</p>
         <p className={style.productSize}>Размер: {product.size}</p>

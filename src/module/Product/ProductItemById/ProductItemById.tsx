@@ -1,6 +1,6 @@
 import { Button, InputNumber, InputNumberProps, Space } from "antd";
 import { useCartStore } from "../../../store/useCartStore";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, BadgeRussianRuble, ShoppingBasket } from "lucide-react";
 import style from "./ProductItemById.module.scss";
 import { getProductById } from "../../../hook/productHook";
@@ -16,6 +16,7 @@ export function ProductItemById() {
   const onChange: InputNumberProps["onChange"] = (value) => {
     setCountInput(value as number);
   };
+  const navigate = useNavigate();
   const params = useParams();
   const { productData } = getProductById(Number(params.id));
   if (!productData) {
@@ -28,12 +29,12 @@ export function ProductItemById() {
 
   return (
     <div className="containerPostItem">
-      <Link to={"/"} className={style.btnBack}>
-        <ArrowLeft size={48} /> назад
-      </Link>
+      <button onClick={() => navigate(-1)} className={style.btnBack}>
+        <ArrowLeft size={48} />
+      </button>
 
       <ProductItemByIdCarusel images={productData?.image_src as string[]} video={productData?.video_src as string}/>
-      
+
       <div className={style.productItem}>
         <p className={style.productName}>{productData.product_name}</p>
         <p className={style.productPrice}>Цена: {productData.price}₽</p>

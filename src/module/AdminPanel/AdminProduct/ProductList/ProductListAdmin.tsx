@@ -4,11 +4,8 @@ import { IProduct } from '../../../../interface/product';
 import ProductForm from '../ProductForm/ProductForm';
 import useMessage from 'antd/es/message/useMessage';
 import style from './ProductList.module.scss';
-import { useProductStore } from '../../../../store/useProductStore';
 import { addProduct, deleteProduct, uploadProductImages,productData, uploadProductVideo } from '../../../../hook/productHook';
-import { useCategoryStore } from '../../../../store/useCategoryStore';
-import { categoryData } from '../../../../hook/categoryHook';
-import { ICategory } from '../../../../interface/category';
+import {  ICategoryChild } from '../../../../interface/category';
 import { baseURL } from '../../../../api/interseptots';
 import { ProductFormModal } from '../ProductFormModal/ProductFormModal';
 import { FilterDropdownProps } from 'antd/es/table/interface';
@@ -18,18 +15,15 @@ import { SearchOutlined } from '@ant-design/icons';
 type DataIndex = keyof IProduct;
 
 const ProductListAdmin: React.FC = () => {
-  const { setProducts, products } = useProductStore();
 
-  const { productsData, isSuccess, isLoading } = productData();
+  const { productsData, isLoading } = productData();
   const [messageApi, contextHolder] = useMessage();
 
   const { mutate: addMutation } = addProduct();
   const { mutate: deleteMutation, errorProduct } = deleteProduct();
   const { mutate: uploadImagesMutation } = uploadProductImages();
   const { mutate: uploadVideoMutation } = uploadProductVideo();
-  const setCategories  = useCategoryStore(state => state.setCategories);
- 
-  const {categoriesData,isSuccess:isSuccessCategory} = categoryData()
+
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [product, setProduct] = useState<IProduct>()
@@ -47,11 +41,6 @@ const ProductListAdmin: React.FC = () => {
     setIsModalOpen(false);
   };
 
-    useEffect(()=>{
-        if(isSuccessCategory){
-            setCategories(categoriesData as ICategory[])
-        }
-      },[categoriesData,isSuccessCategory])
 
   const errorMessage = () => {
     messageApi.open({
@@ -60,11 +49,7 @@ const ProductListAdmin: React.FC = () => {
     });
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      setProducts(productsData as IProduct[]);
-    }
-  }, [isSuccess, productsData]);
+
 
   useEffect(() => {
     if (errorProduct) errorMessage();
@@ -202,6 +187,12 @@ const ProductListAdmin: React.FC = () => {
       ...getColumnSearchProps('product_name'),
     },
     {
+      title: 'Категория',
+      dataIndex: 'category',
+      key: 'category',
+      render: (category: ICategoryChild) => category.category_name
+    },
+    {
       title: 'Цена',
       dataIndex: 'price',
       key: 'price',
@@ -238,7 +229,7 @@ const ProductListAdmin: React.FC = () => {
         </div>
       ),
     },
-  ];  
+  ];
 
   const onChangeInput:InputProps['onChange'] = (e) =>{
     if(Number(e.target.value) <= 0){
@@ -254,7 +245,7 @@ const ProductListAdmin: React.FC = () => {
       <ProductFormModal isModalOpen={isModalOpen}  handleOk={handleOk} handleCancel={handleCancel} values={product as IProduct}/>
       <div className={style.productPanel}>
         <ProductForm onSubmit={handleAdd} type="Добавить" isModalOpen={isModalOpen}/>
-        <Table dataSource={products} columns={columns} loading={isLoading} pagination={{ pageSize: Number(pageSize)}} scroll={{ y: '80vh' }} 
+        <Table dataSource={productsData} columns={columns} loading={isLoading} pagination={{ pageSize: Number(pageSize)}} scroll={{ y: '80vh' }}
         footer={(_) => (
           <>
             <Typography.Title level={5}>Количество товара в таблице</Typography.Title>

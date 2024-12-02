@@ -1,3 +1,9 @@
+.productList{
+    display: flex;
+    flex-direction: row;
+
+}
+
 .product{
     display: flex;
     flex-direction: column;
@@ -45,18 +51,18 @@
                         top:-41px
                     }
                 }
-    
+
             }
-            
+
         }
     }
-    
+
     .productFilter.visible {
         top: 0; /* Показываем блок при прокрутке вниз */
     }
 }
 
-.productList{
+.productListItem{
     display: flex;
     flex-wrap: wrap;
     gap: 50px;
@@ -70,4 +76,47 @@
 
 .productListPagination{
     margin: 20px 0;
+}
+
+.btnBack{
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 5px;
+    border-radius: 8px;
+    background-color: inherit;
+    font-size: 18px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.5s;
+
+    &:hover{
+        background-color: #fff;
+        color: #0ed359 ;
+    }
+}
+
+.btnBack2{
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #0ed359;
+    border: 2px solid #0ed359;
+    padding: 5px;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 18px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.5s;
+
+    &:hover{
+        background-color: #0ed359;
+        color: #fff ;
+
+    }
 }

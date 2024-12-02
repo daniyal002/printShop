@@ -3,12 +3,17 @@ import { axiosClassic } from '../api/interseptots';
 
 export const productsService = {
   async getProducts(){
-    const response = await axiosClassic.get<IProduct[]>('/products');
+    const response = await axiosClassic.get<IProduct[]>("/products");
+    return response.data;
+  },
+
+  async getProductsFilteredByCategory(categoryId:number){
+    const response = await axiosClassic.get<IProduct[]>(`/products/${categoryId}`);
     return response.data;
   },
 
   async getProductById(id:number){
-    const response = await axiosClassic.get<IProduct>(`/products/${id}`);
+    const response = await axiosClassic.get<IProduct>(`/products/${id}/details`);
     return response.data;
   },
 

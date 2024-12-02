@@ -18,11 +18,11 @@ export function CartItem({cart}:Props){
 
 
     useEffect(()=>{
-        updateCartItem(cart.id as number,{count:countInput}) 
+        updateCartItem(cart.id as number,{count:countInput})
     },[countInput])
 
     const onChange: InputNumberProps['onChange'] = (value) => {
-        updateCartItem(cart.id as number,{count:value as number}) 
+        updateCartItem(cart.id as number,{count:value as number})
         setCountInput(value as number)
       };
 
@@ -35,9 +35,9 @@ export function CartItem({cart}:Props){
             <p className={style.cartInfoPrice}>{cart.product.price}₽</p>
             <p className={style.cartInfoSize}>{cart.product.size}</p>
             <Space.Compact >
-                <Button onClick={() => setCountInput(prev => prev + 1)}>+</Button>
-                <InputNumber min={1} defaultValue={cart.count} onChange={onChange} value={countInput} id={style.cartInfoCountInput} />
                 <Button onClick={() => setCountInput(prev => prev - 1)}>-</Button>
+                <InputNumber min={1} defaultValue={cart.count} onChange={onChange} value={countInput} id={style.cartInfoCountInput} />
+                <Button onClick={() => setCountInput(prev => prev + 1)}>+</Button>
             </Space.Compact>
         </div>
         <div className={style.cartPrice}>

@@ -1,3 +1,5 @@
+import { ICategoryChild } from "./category";
+
 export interface IProduct{
     id?:number,
     product_name:string,
@@ -6,4 +8,5 @@ export interface IProduct{
     category_id:number,
     image_src?:string[],
     video_src?:string,
+    category?:ICategoryChild
 }

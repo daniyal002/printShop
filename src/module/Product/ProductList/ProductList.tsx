@@ -1,45 +1,48 @@
-import { useProductStore } from "../../../store/useProductStore";
 import style from "./ProductList.module.scss";
 import { useEffect, useState } from "react";
 import { IProduct } from "../../../interface/product";
 import { Input, Select, Pagination } from "antd";
 import { SearchProps } from "antd/es/input";
 import { ProductListItem } from "./ProductListItem/ProductListItem";
-import { productData } from "../../../hook/productHook";
-import { useCategoryStore } from "../../../store/useCategoryStore";
-import { Link } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import { productDataFilterByCategoryId } from "../../../hook/productHook";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { useCartStore } from "../../../store/useCartStore";
+import { categoryDataHierarchy } from "../../../hook/categoryHook";
+import { ICategory } from "../../../interface/category";
 
 export const ProductList: React.FC = () => {
-  const products = useProductStore((state) => state.products);
-  const categories = useCategoryStore((state) => state.categories);
-  const setProducts = useProductStore((state) => state.setProducts);
   const carts = useCartStore((state) => state.carts);
+  const params = useParams();
+  const { categoriesDataHierarchy } = categoryDataHierarchy();
+  const { productsDataFilterByCategoryId } = productDataFilterByCategoryId(
+    Number(params.categoryId)
+  );
 
-  const { isSuccess, productsData } = productData();
-
-  // Инициируем searchProduct как пустой массив
+  const navigate = useNavigate();
   const [searchProduct, setSearchProduct] = useState<IProduct[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  // Инициализация searchProduct при загрузке данных
   useEffect(() => {
-    if (isSuccess) {
-      setProducts(productsData as IProduct[]);
-      setSearchProduct(productsData as IProduct[]);
+    if (productsDataFilterByCategoryId) {
+      setSearchProduct(productsDataFilterByCategoryId);
     }
-  }, [isSuccess, productsData, setProducts]);
+  }, [productsDataFilterByCategoryId]);
 
   const { Search } = Input;
-  const onSearch: SearchProps["onSearch"] = (value, _e) => {
-    if (value !== "") {
+
+  const onSearch: SearchProps["onSearch"] = (value) => {
+    if (value) {
       const regex = new RegExp(value.split("").join(".*"), "i");
       setSearchProduct(
-        products.filter((product) => regex.test(product.product_name))
+        productsDataFilterByCategoryId?.filter((product) =>
+          regex.test(product.product_name)
+        ) as IProduct[]
       );
     } else {
-      setSearchProduct(products);
+      setSearchProduct(productsDataFilterByCategoryId as IProduct[]);
     }
     setCurrentPage(1);
   };
@@ -47,11 +50,12 @@ export const ProductList: React.FC = () => {
   const onChange = (value: string) => {
     if (value) {
       setSearchProduct(
-        products.filter((product) => product.category_id === Number(value))
+        productsDataFilterByCategoryId?.filter(
+          (product) => product.category_id === Number(value)
+        ) as IProduct[]
       );
     } else {
-      // Если значение пустое, то сбрасываем список продуктов к исходному
-      setSearchProduct(products);
+      setSearchProduct(productsDataFilterByCategoryId as IProduct[]);
     }
     setCurrentPage(1);
   };
@@ -65,19 +69,14 @@ export const ProductList: React.FC = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   useEffect(() => {
-    scrollTop >= 500 ? setIsFilterVisible(true) : setIsFilterVisible(false);
+    setIsFilterVisible(scrollTop >= 500);
   }, [scrollTop]);
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [currentPage]);
 
   const filterOption = (
     input: string,
@@ -90,9 +89,42 @@ export const ProductList: React.FC = () => {
     startIndex + itemsPerPage
   );
 
+ // Фильтрация подкатегорий, относящихся к родительской категории
+// Рекурсивная функция для получения всех подкатегорий
+const getAllSubcategories = (category: ICategory): { value: string; label: string }[] => {
+  const subcategoryOptions = category.subcategories?.flatMap((subcategory) => {
+    // Получаем подкатегории текущей подкатегории
+    return [
+      {
+        value: String(subcategory.id),
+        label: subcategory.category_name,
+      },
+      ...getAllSubcategories(subcategory), // Рекурсивный вызов
+    ];
+  }) || [];
+
+  return subcategoryOptions;
+};
+
+// Фильтрация категорий и подкатегорий
+const options = categoriesDataHierarchy?.flatMap((category) => {
+  // Если текущая категория - родительская для выбранной категории
+  if (category.id === Number(params.categoryId)) {
+    // Возвращаем родительскую категорию и её подкатегории
+    return [
+      {
+        value: String(category.id),
+        label: category.category_name,
+      },
+      ...getAllSubcategories(category), // Получаем все подкатегории
+    ];
+  }
+
+  return [];
+}) || [];
   return (
-    <div className={style.product}>
-      <div>
+      <div className={style.product}>
+      <div style={{width:"95%"}}>
         <Search
           placeholder="Введите название товара"
           onSearch={onSearch}
@@ -106,13 +138,13 @@ export const ProductList: React.FC = () => {
           placeholder="Каталог"
           optionFilterProp="children"
           onChange={onChange}
-          style={{width:"100%"}}
+          style={{ width: "100%" }}
           filterOption={filterOption}
-          options={categories.map((category) => ({
-            value: category.id?.toString() as string,
-            label: category.category_name,
-          }))}
+          options={options}
         />
+        <button onClick={() => navigate(-1)} className={style.btnBack}>
+        <ArrowLeft size={48} />
+      </button>
       </div>
       <div
         className={`${style.productFilter} ${
@@ -131,27 +163,27 @@ export const ProductList: React.FC = () => {
             showSearch
             placeholder="Каталог"
             optionFilterProp="children"
-            style={{width:"100%"}}
+            style={{ width: "100%" }}
             onChange={onChange}
             filterOption={filterOption}
-            options={categories.map((category) => ({
-              value: category.id?.toString() as string,
-              label: category.category_name,
-            }))}
-          allowClear
-
+            options={options}
+            allowClear
           />
           <div className={style.headerCart}>
             <button>
               <Link to={`cart`}>
-                <ShoppingCart size={45} className={style.shoppingCart} />{" "}
+                <ShoppingCart size={45} className={style.shoppingCart} />
                 <span>{carts.length}</span>
               </Link>
             </button>
           </div>
+
         </div>
+        <button onClick={() => navigate(-1)} className={style.btnBack2}>
+        <ArrowLeft size={48} />
+      </button>
       </div>
-      <div className={style.productList}>
+      <div className={style.productListItem}>
         {paginatedProducts.map((product) => (
           <ProductListItem product={product} key={product.id} />
         ))}
@@ -166,5 +198,6 @@ export const ProductList: React.FC = () => {
         />
       </div>
     </div>
+
   );
 };

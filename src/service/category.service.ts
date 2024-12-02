@@ -6,7 +6,10 @@ export const categoriesService = {
         const response = await axiosClassic.get<ICategory[]>('/categories')
         return response.data
     },
-
+    async getCategoriesHierarchy(){
+        const response = await axiosClassic.get<ICategory[]>('/categories/findAllfindAllHierarchy')
+        return response.data
+    },
     async addCategories(data: ICategory, file?: File) {
         const formData = new FormData();
         if (file) {
