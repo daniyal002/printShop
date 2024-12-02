@@ -5,7 +5,7 @@ import style from "./Cart.module.scss";
 import { CartTotal } from "./CartTotal/CartTotal";
 import { CartTotalModal } from "./CartTotalModal/CartTotalModal";
 import { ArrowLeft, BadgeRussianRuble } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export function Cart() {
   const carts = useCartStore((state) => state.carts);
